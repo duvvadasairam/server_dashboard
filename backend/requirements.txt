@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+asyncpg
+pydantic
+faker
+pytest
+alembic
+python-dotenv
+psycopg2-binary # For Alembic migrations

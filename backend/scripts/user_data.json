@@ -1,0 +1,146 @@
+{
+  "servers": [
+    {
+      "name": "WebApp Alpha",
+      "ip_address": "192.168.1.101",
+      "created_at": "2024-01-15T10:00:00Z",
+      "tag": "Frontend",
+      "provider": "CloudProviderX",
+      "status": "online",
+      "alerts": [
+        {
+          "severity": "critical",
+          "message": "High CPU utilization detected.",
+          "timestamp": "2025-05-10T14:30:00Z"
+        },
+        {
+          "severity": "trouble",
+          "message": "Disk space running low.",
+          "timestamp": "2025-05-09T08:15:00Z"
+        }
+      ],
+      "metrics": [
+        {
+          "cpu_usage": 95.5,
+          "ram_usage": 75.2,
+          "disk_usage": 88.0,
+          "app_usage": 60.1,
+          "network_traffic": 15.5,
+          "timestamp": "2025-05-11T10:00:00Z"
+        },
+        {
+          "cpu_usage": 80.0,
+          "ram_usage": 70.0,
+          "disk_usage": 85.0,
+          "app_usage": 55.0,
+          "network_traffic": 12.3,
+          "timestamp": "2025-05-10T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "name": "Database Beta",
+      "ip_address": "192.168.1.102",
+      "created_at": "2023-11-20T12:30:00Z",
+      "tag": "Backend",
+      "provider": "CloudProviderY",
+      "status": "offline",
+      "alerts": [
+        {
+          "severity": "clear",
+          "message": "Offline status resolved.",
+          "timestamp": "2025-05-08T17:00:00Z"
+        }
+      ],
+      "metrics": [
+        {
+          "cpu_usage": 10.2,
+          "ram_usage": 30.5,
+          "disk_usage": 40.0,
+          "app_usage": 5.0,
+          "network_traffic": 1.2,
+          "timestamp": "2025-05-07T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "name": "Cache Server Gamma",
+      "ip_address": "192.168.1.103",
+      "created_at": "2024-03-01T08:00:00Z",
+      "tag": "Cache",
+      "provider": "CloudProviderX",
+      "status": "online",
+      "alerts": [],
+      "metrics": [
+        {
+          "cpu_usage": 25.0,
+          "ram_usage": 50.0,
+          "disk_usage": 30.0,
+          "app_usage": 15.0,
+          "network_traffic": 8.7,
+          "timestamp": "2025-05-11T09:00:00Z"
+        }
+      ]
+    },
+    {
+      "name": "API Gateway Delta",
+      "ip_address": "192.168.1.104",
+      "created_at": "2024-05-01T12:00:00Z",
+      "tag": "API",
+      "provider": "Self-Hosted",
+      "status": "online",
+      "alerts": [
+        {
+          "severity": "trouble",
+          "message": "High latency detected",
+          "timestamp": "2025-05-11T10:00:00Z"
+        }
+      ],
+      "metrics": [
+        {
+          "cpu_usage": 40.0,
+          "ram_usage": 60.0,
+          "disk_usage": 50.0,
+          "app_usage": 30.0,
+          "network_traffic": 25.0,
+          "timestamp": "2025-05-11T11:00:00Z"
+        }
+      ]
+    },
+    {
+      "name": "New Server Epsilon",
+      "ip_address": "192.168.1.105",
+      "created_at": "2024-07-01T10:00:00Z",
+      "tag": "Worker",
+      "provider": "DigitalOcean",
+      "status": "online",
+      "alerts": [
+        {
+          "severity": "clear",
+          "message": "Deployment successful.",
+          "timestamp": "2024-07-01T10:05:00Z"
+        }
+      ],
+      "metrics": [
+        {
+          "cpu_usage": 15.0,
+          "ram_usage": 25.5,
+          "disk_usage": 30.0,
+          "app_usage": 10.0,
+          "network_traffic": 5.0,
+          "timestamp": "2024-07-01T11:00:00Z"
+        }
+      ]
+    },
+    {
+      "name": "Another Server Zeta",
+      "ip_address": "192.168.1.106",
+      "created_at": "2024-07-02T12:00:00Z",
+      "tag": "Database",
+      "provider": "AWS",
+      "status": "online",
+      "alerts": [],
+      "metrics": []
+    }
+  ]
+}
