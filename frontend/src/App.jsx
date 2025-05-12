@@ -13,7 +13,7 @@ function App() {
   useEffect(() => {
     const fetchServers = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/servers');
+        const response = await axios.get('https://serverb2-dashboard.onrender.com/servers');
         setServers(response.data);
         setLoading(false);
       } catch (err) {

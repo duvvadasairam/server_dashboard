@@ -11,8 +11,7 @@ app = FastAPI(
 
 # Add CORS middleware
 origins = [
-    "http://localhost",          # Allow localhost for development
-    "http://localhost:3000",     # Common React dev port
+    "https://servers-dashboard.vercel.app/",  # Vercel deployment
     "http://localhost:5173",     # Vite default dev port
     # Add any other origins if your frontend is served from a different port
 ]
