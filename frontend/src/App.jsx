@@ -13,8 +13,9 @@ function App() {
   useEffect(() => {
     const fetchServers = async () => {
       try {
-        const response = await axios.get('https://serverb2-dashboard.onrender.com/servers');
+        const response = await axios.get('https://skillful-mindfulness-production.up.railway.app/servers');
         setServers(response.data);
+        //console.log(response.data); for checking
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -25,7 +26,7 @@ function App() {
     fetchServers();
   }, []);
 
-  // Mock data for charts - replace with API data if available
+  //dummy data for few components
   const cpuData = [{ name: 'CPU Usage', value: 50.03 }];
   const COLORS = ['#0088FE', '#FFBB28', '#FF8042']; // Colors for pie chart segments
 
