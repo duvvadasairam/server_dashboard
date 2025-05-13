@@ -7,15 +7,17 @@ import { formatDistanceToNow } from 'date-fns';
 
 function App() {
   const [servers, setServers] = useState([]);
+  const [cpuUsage, setCpuUsage] = useState(null);
+  const [ramUsageData, setRamUsageData] = useState([]);
+  const [heatMapData, setHeatMapData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchServers = async () => {
       try {
-        const response = await axios.get('https://skillful-mindfulness-production.up.railway.app/servers');
+        const response = await axios.get('http://127.0.0.1:8000/servers');
         setServers(response.data);
-        //console.log(response.data); for checking
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -23,28 +25,60 @@ function App() {
       }
     };
 
+    const fetchMetrics = async () => {
+      try {
+        const metricIds = [1, 2, 3, 4, 5]; // List of metric IDs
+        const allRamUsageData = [];
+        let cpuUsageData = null;
+
+        // Define a sequential list of months
+        const allMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        for (const id of metricIds) {
+          const response = await axios.get(`http://127.0.0.1:8000/metrics/${id}`);
+          const metrics = response.data;
+
+          // Set CPU usage only for the first metric ID
+          if (id === metricIds[0]) {
+            cpuUsageData = metrics.cpu.cpu_usage;
+          }
+
+          // Get the month names sequentially for the current metric ID
+          const monthNames = allMonths.slice((id - 1) * 1, (id - 1) * 2 + 5);
+
+          // Aggregate RAM usage data with month names
+          const ramUsage = metrics.ram.ram_usage.map((usage, index) => ({
+            name: monthNames[index % monthNames.length], // Use month names sequentially
+            usage,
+          }));
+          allRamUsageData.push(...ramUsage);
+        }
+
+        setCpuUsage(cpuUsageData);
+        setRamUsageData(allRamUsageData);
+      } catch (err) {
+        console.error('Error fetching metrics:', err.message);
+      }
+    };
+
+    const fetchAlerts = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/alerts/count');
+        const alertCounts = response.data;
+        setHeatMapData([
+          { name: 'Clear', value: alertCounts.clear, color: '#28a745' },
+          { name: 'Critical', value: alertCounts.critical, color: '#dc3545' },
+          { name: 'Trouble', value: alertCounts.trouble, color: '#ffc107' },
+        ]);
+      } catch (err) {
+        console.error('Error fetching alerts:', err.message);
+      }
+    };
+
     fetchServers();
+    fetchMetrics();
+    fetchAlerts();
   }, []);
-
-  //dummy data for few components
-  const cpuData = [{ name: 'CPU Usage', value: 50.03 }];
-  const COLORS = ['#0088FE', '#FFBB28', '#FF8042']; // Colors for pie chart segments
-
-  const heatMapData = [
-    { name: 'Clear', value: 60, color: '#28a745' }, // Green
-    { name: 'Critical', value: 30, color: '#dc3545' }, // Red
-    { name: 'Trouble', value: 10, color: '#ffc107' }, // Yellow
-  ];
-
-  const ramUsageData = [
-    { name: 'Jan', usage: 30 },
-    { name: 'Feb', usage: 70 },
-    { name: 'Mar', usage: 60 },
-    { name: 'Apr', usage: 100 },
-    { name: 'May', usage: 80 },
-    { name: 'Jun', usage: 50 },
-    { name: 'Jul', usage: 70 },
-  ];
 
   return (
     <div className="dashboard-container">
@@ -56,25 +90,34 @@ function App() {
           <h2>CPU Daily Usage</h2>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
+              {/* Background Arc */}
               <Pie
-                data={cpuData}
+                data={[{ value: 100 }]}
                 cx="50%"
                 cy="50%"
                 startAngle={180}
                 endAngle={0}
-                innerRadius={60}
-                outerRadius={80}
-                fill="#8884d8"
-                paddingAngle={5}
+                innerRadius={70}
+                outerRadius={90}
+                fill="#e0e0e0"
                 dataKey="value"
-              >
-                <Cell fill="#0088FE" /> 
-              </Pie>
-              <Tooltip />
+              />
+              {/* Foreground Arc */}
+              <Pie
+                data={[{ value: cpuUsage || 0 }]}
+                cx="50%"
+                cy="50%"
+                startAngle={180}
+                endAngle={180 - (cpuUsage || 0) * 1.8} // Scale 100% to 180 degrees
+                innerRadius={70}
+                outerRadius={90}
+                fill={cpuUsage < 80 ? "#28a745" : "#dc3545"} // Green if <80%, Red otherwise
+                dataKey="value"
+              />
             </PieChart>
           </ResponsiveContainer>
-          <p className="cpu-percentage">{cpuData[0].value}%</p>
-          <p className="cpu-status">CPU usage is good</p>
+          <p className="cpu-percentage">{cpuUsage ? `${cpuUsage.toFixed(2)}%` : 'Loading...'}</p>
+          <p className="cpu-status">{cpuUsage && cpuUsage < 80 ? 'CPU usage is good' : 'High CPU usage detected'}</p>
         </div>
 
         <div className="widget alarms-widget">
@@ -102,11 +145,25 @@ function App() {
           <h2>Ram Usage</h2>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={ramUsageData}>
+              <defs>
+                <linearGradient id="colorUsage" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Line type="monotone" dataKey="usage" stroke="#8884d8" activeDot={{ r: 8 }} />
+              <Line
+                type="monotone"
+                dataKey="usage"
+                stroke="#8884d8"
+                strokeWidth={2}
+                fill="url(#colorUsage)"
+                dot={false}
+                activeDot={{ r: 6 }}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>

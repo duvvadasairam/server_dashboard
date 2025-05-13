@@ -8,7 +8,7 @@ import os
 import json # Added for JSON handling
 from datetime import datetime, timezone # Ensure timezone is imported for UTC conversion
 
-# --- BEGIN DEBUG PRINTS ---
+#Begin debug prints
 print(f"Initial __file__: {__file__}")
 print(f"Initial os.path.abspath(__file__): {os.path.abspath(__file__)}")
 backend_dir_calc = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +20,12 @@ src_path_check = os.path.join(backend_dir_calc, 'src')
 print(f"Expected src_path: {src_path_check}")
 print(f"Does src_path exist? {os.path.exists(src_path_check)}")
 print(f"Is src_path a directory? {os.path.isdir(src_path_check)}")
-# --- END DEBUG PRINTS ---
+# end debug prints
 
 from src.models.database import Base, Server, Alert, Metric, ServerStatus, AlertSeverity
 # Remove timedelta and random if no longer needed after full replacement
-# import random 
-# from datetime import timedelta 
+#import random 
+#from datetime import timedelta 
 from dotenv import load_dotenv
 
 # Load .env from the 'backend' directory (parent of 'scripts')
@@ -66,8 +66,8 @@ async def populate_db():
             created_servers_map = {} # To map JSON server name/identifier to DB server object for relations
 
             for server_data_json in user_data.get("servers", []):
-                # Convert string dates to datetime objects
-                # Assuming created_at is in ISO 8601 format and needs to be UTC
+                #Convert string dates to datetime objects
+                #Assuming created_at is in ISO 8601 format and needs to be UTC
                 created_at_dt_aware = datetime.fromisoformat(server_data_json["created_at"].replace('Z', '+00:00'))
                 # Convert to naive UTC datetime for TIMESTAMP WITHOUT TIME ZONE columns
                 created_at_dt_naive = created_at_dt_aware.astimezone(timezone.utc).replace(tzinfo=None)
@@ -81,10 +81,10 @@ async def populate_db():
                     status=ServerStatus[server_data_json["status"]] # Convert string to Enum
                 )
                 session.add(server)
-                # We need to flush to get server IDs if alerts/metrics are added immediately
-                # and reference this server. Storing them to add related data later.
-                # Or, if server identifiers in JSON are unique and used for mapping,
-                # we can add them to a map. For simplicity, let's flush and get IDs.
+                
+                #Flush to get the server ID for immediate use in related alerts/metrics.
+                
+
                 await session.flush() 
                 await session.refresh(server) # Ensure the server object has the ID
                 created_servers_map[server_data_json["name"]] = server # Or use another unique ID from JSON if available
@@ -120,8 +120,7 @@ async def populate_db():
                     )
                     session.add(metric)
             
-            # Removed old hardcoded server, alert, and metric creation logic
-            # ... (old servers_data array and loops for alerts/metrics) ...
+           
 
         await session.commit()
     await engine.dispose()
