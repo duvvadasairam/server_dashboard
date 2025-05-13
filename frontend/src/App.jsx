@@ -16,7 +16,7 @@ function App() {
   useEffect(() => {
     const fetchServers = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/servers');
+        const response = await axios.get('https://backfinaldashboard-production.up.railway.app/servers');
         setServers(response.data);
         setLoading(false);
       } catch (err) {
@@ -35,7 +35,7 @@ function App() {
         const allMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
         for (const id of metricIds) {
-          const response = await axios.get(`http://127.0.0.1:8000/metrics/${id}`);
+          const response = await axios.get(`https://backfinaldashboard-production.up.railway.app/metrics/${id}`);
           const metrics = response.data;
 
           // Set CPU usage only for the first metric ID
@@ -63,7 +63,7 @@ function App() {
 
     const fetchAlerts = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/alerts/count');
+        const response = await axios.get('https://backfinaldashboard-production.up.railway.app/alerts/count');
         const alertCounts = response.data;
         setHeatMapData([
           { name: 'Clear', value: alertCounts.clear, color: '#28a745' },
